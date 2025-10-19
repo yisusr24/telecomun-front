@@ -49,3 +49,12 @@ Este levantara los 3 contenedores >back >front >bd
 
 La aplicación quedará disponible en:  
 > http://localhost:8080/
+
+
+**USUARIOS DE PRUEBA**
+```
+jesus.rosales@example.com
+andres.gomez@example.com
+carla.ramos@example.com
+La contraseña para todos es admin
+```
