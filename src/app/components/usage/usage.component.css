@@ -1,0 +1,8 @@
+.title { font-weight: 700; }
+.subtitle { color: #6c757d; }
+
+.card { border-radius: 16px; }
+.table { background: #fff; border-radius: 16px; overflow: hidden; }
+.table th { font-weight: 600; color: #6c757d; }
+
+:host ::ng-deep .chartjs-render-monitor { border-radius: 12px; }

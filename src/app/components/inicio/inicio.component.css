@@ -1,0 +1,40 @@
+.title { font-weight: 700; }
+.subtitle { color: #6c757d; }
+.plan-card { border-radius: 16px; }
+.product-type { color: #6f42c1; margin: 0; }
+.plan-name { font-weight: 700; margin: 0; }
+.price { font-size: 1.6rem; font-weight: 800; color: #7a35d3; }
+.balance { font-size: .95rem; }
+.meter-title { font-weight: 600; margin-bottom: .25rem; }
+.progress { height: 10px; border-radius: 999px; background: #eee; }
+.progress-bar { background: linear-gradient(90deg,#7a35d3,#a45deb); }
+.badge-success { background-color: #28a745; }
+.badge-warning { background-color: #ffc107; color: #212529; }
+.badge-secondary { background-color: #6c757d; }
+.addons .badge { font-weight: 600; }
+
+/* Columna de sección: asegura que no herede anchos raros y se acomode al grid */
+.section-col { min-width: 0; }
+
+/* Carrusel interno de cards */
+.scroller {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: .75rem;
+}
+
+/* (Opcional) oculta scrollbars en navegadores comunes */
+.scroller::-webkit-scrollbar { height: 8px; }
+.scroller::-webkit-scrollbar-thumb { background: #ddd; border-radius: 999px; }
+
+.addons-inline {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: .5rem;
+  overflow-x: auto;
+}
+.addons-inline .badge { white-space: nowrap; }
+
+.modal .modal-dialog { margin-top: 10vh; } /* caída agradable */

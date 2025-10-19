@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md telcox-navbar">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand" routerLink="/dashboard">XTRIM</a>
+
+    <!-- Toggler -->
+    <button class="navbar-toggler" type="button"
+            data-toggle="collapse" data-target="#navbarMenu"
+            aria-controls="navbarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Contenido -->
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <!-- MENÚ PRINCIPAL -->
+      <ul class="navbar-nav mr-auto main-nav">
+        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+          <a class="nav-link" routerLink="/inicio">Inicio</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/facturas">Facturas</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/consumo">Consumo</a>
+        </li>
+      </ul>
+
+      <div class="navbar-right ml-auto d-flex align-items-center">
+        <span *ngIf="isAuthenticated" class="welcome d-none d-md-inline">
+          Bienvenido, <strong>{{ displayName }}</strong>
+        </span>
+        <button *ngIf="isAuthenticated" class="btn btn-logout ml-2" (click)="onLogout()">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

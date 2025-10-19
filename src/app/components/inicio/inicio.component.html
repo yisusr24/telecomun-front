@@ -1,0 +1,207 @@
+<app-navbar></app-navbar>
+
+<div class="container my-4">
+  <h2 class="title">Tus productos activos</h2>
+    <br>
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border"></div>
+  </div>
+
+  <div *ngIf="error && !loading" class="alert alert-danger">{{ error }}</div>
+
+  <!-- GRID DE SECCIONES -->
+  <div class="row g-4" *ngIf="!loading && !error">
+    <!-- INTERNET -->
+    <div class="col-12 col-md-6 col-lg-4 section-col" *ngIf="internetSubs().length">
+      <h4 class="mb-3">Internet</h4>
+      <div class="scroller">
+        <div class="card shadow-sm plan-card flex-shrink-0" style="width: 320px" *ngFor="let s of internetSubs()">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="product-type">{{ s.productName }}</h5>
+                <h4 class="plan-name">{{ s.planName }}</h4>
+              </div>
+              <span class="badge" [ngClass]="statusBadge(s.estado)">{{ s.estado }}</span>
+            </div>
+
+            <div class="price my-2">
+              ${{ s.monthlyFee | number:'1.2-2' }} <small>/ mes</small>
+            </div>
+            <div class="balance text-muted">
+              Saldo: <strong>${{ s.saldo | number:'1.2-2' }}</strong>
+            </div>
+
+            <hr />
+            <div class="meter-title">Velocidad</div>
+            <div class="h5 font-weight-bold">{{ s.speedMbps || 0 }} Mbps</div>
+
+            <div class="mt-auto pt-3">
+              <button class="btn btn-primary w-100" (click)="openDetail(s)">Ver detalles</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELEFONÍA -->
+    <div class="col-12 col-md-6 col-lg-4 section-col" *ngIf="phoneSubs().length">
+      <h4 class="mb-3">Telefonía Fija</h4>
+      <div class="scroller">
+        <div class="card shadow-sm plan-card flex-shrink-0" style="width: 320px" *ngFor="let s of phoneSubs()">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="product-type">{{ s.productName }}</h5>
+                <h4 class="plan-name">{{ s.planName }}</h4>
+              </div>
+              <span class="badge" [ngClass]="statusBadge(s.estado)">{{ s.estado }}</span>
+            </div>
+
+            <div class="price my-2">
+              ${{ s.monthlyFee | number:'1.2-2' }} <small>/ mes</small>
+            </div>
+            <div class="balance text-muted">
+              Saldo: <strong>${{ s.saldo | number:'1.2-2' }}</strong>
+            </div>
+
+            <hr />
+            <div class="meter-title">Minutos usados</div>
+            <div class="progress">
+              <div class="progress-bar" [style.width.%]="minutesPercent(minUsados(s), minCuota(s))"></div>
+            </div>
+            <div class="small text-muted mt-1">
+              {{ minUsados(s) || 0 }} min de {{ minCuota(s) || 0 }} min
+            </div>
+
+            <div class="mt-auto pt-3">
+              <button class="btn btn-primary w-100" (click)="openDetail(s)">Ver detalles</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TV & STREAMING -->
+    <div class="col-12 col-md-6 col-lg-4 section-col" *ngIf="tvSubs().length">
+      <h4 class="mb-3">TV & Streaming</h4>
+      <div class="scroller">
+        <div class="card shadow-sm plan-card flex-shrink-0" style="width: 320px" *ngFor="let s of tvSubs()">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="product-type">{{ s.productName }}</h5>
+                <h4 class="plan-name">{{ s.planName }}</h4>
+              </div>
+              <span class="badge" [ngClass]="statusBadge(s.estado)">{{ s.estado }}</span>
+            </div>
+
+            <div class="price my-2">
+              ${{ s.monthlyFee | number:'1.2-2' }} <small>/ mes</small>
+            </div>
+            <div class="balance text-muted">
+              Saldo: <strong>${{ s.saldo | number:'1.2-2' }}</strong>
+            </div>
+
+            <hr />
+            <div class="meter-title">Paquetes activos</div>
+            <div *ngIf="s.addons?.length; else noAddons" class="addons mt-1">
+              <span class="badge badge-pill badge-primary me-2 mb-2" *ngFor="let a of s.addons">{{ a }}</span>
+            </div>
+            <ng-template #noAddons>
+              <div class="small text-muted">Sin paquetes.</div>
+            </ng-template>
+
+            <div class="mt-auto pt-3">
+              <button class="btn btn-primary w-100" (click)="openDetail(s)">Ver detalles</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin productos -->
+  <div
+    *ngIf="!loading && !error && !internetSubs().length && !phoneSubs().length && !tvSubs().length"
+    class="alert alert-info"
+  >
+    No encontramos productos asociados a tu cuenta.
+  </div>
+
+  <!-- Modal Detalle -->
+<div id="detailModal" class="modal fade show" tabindex="-1" role="dialog" style="display:none; background: rgba(0,0,0,.5);">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ detail?.productName }} — {{ detail?.planName }}
+        </h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeDetail()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body" *ngIf="!detailLoading; else loadingTpl">
+        <div *ngIf="detailError" class="alert alert-danger">{{ detailError }}</div>
+
+        <ng-container *ngIf="detail">
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Estado:</strong> {{ detail.estado }}</div>
+            <div class="col-sm-4"><strong>Mensualidad:</strong> ${{ detail.monthlyFee | number:'1.2-2' }}</div>
+            <div class="col-sm-4"><strong>Saldo:</strong> ${{ detail.saldo | number:'1.2-2' }}</div>
+          </div>
+
+          <!-- INTERNET -->
+          <div *ngIf="detail.productType === 'INTERNET' && detail.internet">
+            <h6 class="mb-2">Internet</h6>
+            <ul class="list-unstyled">
+              <li><strong>Velocidad:</strong> {{ detail.internet.speedMbps || 0 }} Mbps</li>
+              <li><strong>Datos usados:</strong> {{ detail.internet.dataUsedMb || 0 }} MB de {{ detail.internet.dataQuotaMb || 0 }} MB</li>
+              <li *ngIf="detail.internet.dataPercent != null"><strong>Consumo:</strong> {{ detail.internet.dataPercent }}%</li>
+            </ul>
+          </div>
+
+          <!-- PHONE -->
+          <div *ngIf="detail.productType === 'PHONE' && detail.phone">
+            <h6 class="mb-2">Telefonía</h6>
+            <ul class="list-unstyled">
+              <li><strong>Minutos usados:</strong> {{ detail.phone.minutesUsed || 0 }} de {{ detail.phone.minutesQuota || 0 }}</li>
+              <li *ngIf="detail.phone.minutesPercent != null"><strong>Consumo:</strong> {{ detail.phone.minutesPercent }}%</li>
+            </ul>
+          </div>
+
+          <!-- TV -->
+          <div *ngIf="detail.productType === 'TV' && detail.tv">
+            <h6 class="mb-2">TV & Streaming</h6>
+            <div *ngIf="detail.tv.addons?.length; else noAddonsDtl" class="addons-inline">
+              <span class="badge bg-primary me-2" *ngFor="let a of detail.tv.addons">
+                {{ a.name }} • ${{ a.monthlyFee | number:'1.2-2' }}
+              </span>
+            </div>
+            <ng-template #noAddonsDtl>
+              <div class="small text-muted">Sin paquetes.</div>
+            </ng-template>
+          </div>
+
+          <div class="text-muted mt-3">
+            <small>Última actualización: {{ detail.ultimaActualizacion || '—' }}</small>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #loadingTpl>
+        <div class="modal-body text-center py-5">
+          <div class="spinner-border"></div>
+        </div>
+      </ng-template>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDetail()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

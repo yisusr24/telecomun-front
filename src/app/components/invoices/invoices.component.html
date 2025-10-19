@@ -1,0 +1,49 @@
+<app-navbar></app-navbar>
+
+<div class="container my-4">
+  <h2 class="title">Gestión de Facturas</h2>
+  <br>
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border"></div>
+  </div>
+
+  <div *ngIf="error && !loading" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && invoices().length">
+    <div class="table-responsive shadow-sm rounded-3">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th>Plan</th>
+            <th>Monto</th>
+            <th>Emisión</th>
+            <th>Vencimiento</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let f of invoices()">
+            <td>
+              <strong class="product-type">{{ f.productName }}</strong><br>
+              <small class="text-muted">{{ f.productType }}</small>
+            </td>
+            <td class="plan-name">{{ f.planName }}</td>
+            <td class="price">${{ f.amount | number:'1.2-2' }}</td>
+            <td>{{ f.issueDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{ f.dueDate | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="badge" [ngClass]="badgeClass(f.status)">
+                {{ f.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && !invoices().length" class="alert alert-info">
+    No se encontraron facturas registradas.
+  </div>
+</div>
